@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html class="h-100" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,14 +15,16 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+
+    @yield('css')
 </head>
-<body>
+<body class="h-100">
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
 
-    <div id="app" class="content">
-        <b-navbar toggleable type="light">
+    <div id="app" class="content h-100">
+        <b-navbar toggleable type="light" class="border-bottom">
             <b-container>
                 <b-navbar-toggle target="menu"></b-navbar-toggle>
                 <b-navbar-brand href="{{ url('/') }}">
@@ -48,9 +50,11 @@
             </b-container>
         </b-navbar>
 
-        <main class="py-4">
+        <main style="height: calc(100% - 59.5px);">
             @yield('content')
         </main>
     </div>
+
+    @yield('js')
 </body>
 </html>

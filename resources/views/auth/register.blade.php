@@ -2,7 +2,7 @@
 
 @section('content')
 <b-container>
-    <b-row class="justify-content-center my-3">
+    <b-row class="justify-content-center pt-3">
         <b-col cols="12" md="8" lg="6">
             <div>
                 <b-img center src="{{ asset('img/logo32x32.png') }}" alt="Columbogram logo" />
