@@ -19,9 +19,11 @@ Vue.use(BootstrapVue);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('columbogram-component', require('./components/ColumbogramComponent.vue'));
 Vue.component('contact-component', require('./components/ContactComponent.vue'));
 Vue.component('contact-list-component', require('./components/ContactListComponent.vue'));
 Vue.component('active-conversation-component', require('./components/ActiveConversationComponent.vue'));
+Vue.component('message-conversation-component', require('./components/MessageConversationComponent.vue'));
 
 const app = new Vue({
     el: '#app',
