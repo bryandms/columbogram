@@ -1,7 +1,7 @@
 <template>
     <b-row>
         <b-col class="px-0" cols="12">
-            <b-card class="h-100 border-top-0 rounded-0 border-left-0">
+            <b-card class="h-100 border-top-0 rounded-0 border-left-0" no-body>
 
                 <div slot="header">
                     <b-form inline class="justify-content-between">
@@ -12,17 +12,19 @@
                     </b-form>
                 </div>
 
-                <message-conversation-component
-                    v-for="message in messages"
-                    :key="message.id"
-                    :written-by-me="message.written_by_me">
-                    {{ message.content }}
-                </message-conversation-component>
+                <b-card-body class="card-body-scroll">
+                    <message-conversation-component
+                        v-for="message in messages"
+                        :key="message.id"
+                        :written-by-me="message.written_by_me">
+                        {{ message.content }}
+                    </message-conversation-component>
+                </b-card-body>
 
                 <div slot="footer">
                     <b-form class="mb-0" @submit.prevent="postMessage"
                         autocomplete="off">
-                        <b-input-group>
+                        <b-input-group class="input-group-sm">
                             <b-form-input type="text"
                                 v-model="newMessage"
                                 :placeholder="writeMessage">
@@ -51,24 +53,15 @@
             'sendBtn',
             'disableNotifications',
             'contactId',
-            'contactName'
+            'contactName',
+            'messages'
         ],
         data() {
             return {
-                messages: [],
                 newMessage: ''
             }
         },
-        mounted() {
-            this.getMessages()
-        },
         methods: {
-            getMessages() {
-                axios.get(`/api/messages?contact_id=${this.contactId}`)
-                    .then((res) => {
-                        this.messages = res.data
-                    })
-            },
             postMessage() {
                 const params = {
                     to_id: this.contactId,
@@ -78,15 +71,26 @@
                     .then((res) => {
                         if (res.data.success) {
                             this.newMessage = ''
-                            this.getMessages()
+                            const message = res.data.message
+                            message.written_by_me = true
+                            this.$emit('messageCreated', message)
                         }
                     })
             },
-        },
-        watch: {
-            contactId(value) {
-                this.getMessages()
+            scrollToBottom() {
+                const el = document.querySelector('.card-body-scroll')
+                el.scrollTop = el.scrollHeight
             }
+        },
+        updated() {
+            this.scrollToBottom()
         }
     }
 </script>
+
+<style>
+    .card-body-scroll {
+        overflow-y: auto;
+        max-height: calc(100vh - 165.5px);
+    }
+</style>

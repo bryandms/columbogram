@@ -9,7 +9,7 @@
         </b-col>
         <b-col cols="3" align-self="center" class="d-none d-md-block">
             <div class="row justify-content-center">
-                <p class="text-muted small mb-0 text-right">{{ conversation.last_time }}</p>
+                <p class="text-muted small mb-0 text-right">{{ lastTime }}</p>
             </div>
             <div class="row" style="min-height: 18px;">
                 <b-badge v-show="notifications > 0" class="mx-auto" variant="dark">{{ notifications }}</b-badge>
@@ -23,6 +23,12 @@
         props: {
             'notifications': Number,
             'conversation': Object
+        },
+        computed: {
+            lastTime() {
+                return moment(this.conversation.last_time, "YYYY-MM-DD hh:mm:ss")
+                    .locale('es').fromNow()
+            }
         }
     }
 </script>
