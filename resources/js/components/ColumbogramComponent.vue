@@ -2,9 +2,14 @@
     <b-container fluid class="h-100">
         <b-row class="h-100">
             <b-col cols="4" class="pt-3 border-right">
+                <b-form-input class="form-control-sm"
+                    type="text"
+                    v-model="querySearch"
+                    :placeholder="search">
+                </b-form-input>
                 <contact-list-component :search="search"
                     @conversationSelected="changeActiveConversation($event)"
-                    :conversations="conversations">
+                    :conversations="conversationsFiltered">
                 </contact-list-component>
             </b-col>
 
@@ -31,7 +36,8 @@
             return {
                 selectedConversation: null,
                 messages: [],
-                conversations: []
+                conversations: [],
+                querySearch: ''
             }
         },
         props: [
@@ -101,6 +107,15 @@
                 })
                 if (index >= 0)
                     this.$set(this.conversations[index], 'online', status)
+            }
+        },
+        computed: {
+            conversationsFiltered() {
+                return this.conversations.filter(
+                    conversation => conversation.contact_name
+                    .toLowerCase()
+                    .includes(this.querySearch.toLowerCase())
+                )
             }
         }
     }
