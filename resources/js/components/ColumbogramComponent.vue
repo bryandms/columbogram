@@ -2,7 +2,7 @@
     <b-container fluid class="h-100">
         <b-row class="h-100">
             <b-col cols="4" class="pt-3 border-right">
-                <b-form-input class="form-control-sm"
+                <b-form-input class="form-control-sm mb-2"
                     type="text"
                     v-model="querySearch"
                     :placeholder="search">
@@ -22,11 +22,26 @@
                     v-if="selectedConversation"
                     :contact-id="selectedConversation.contact_id"
                     :contact-name="selectedConversation.contact_name"
+                    :contact-image="selectedConversation.contact_image"
                     :messages="messages"
                     @messageCreated="addMessage($event)">
                 </active-conversation-component>
             </b-col>
         </b-row>
+
+        <!-- Profile Modal -->
+        <profile-component :user="user"
+            :csrf-token="csrfToken"
+            :email="email"
+            :enter-email="enterEmail"
+            :name="name"
+            :enter-name="enterName"
+            :password="password"
+            :enter-password="enterPassword"
+            :send="send"
+            :profile="profile"
+            :upload-file="uploadFile">
+        </profile-component>
     </b-container>
 </template>
 
@@ -46,7 +61,17 @@
             'writeMessage',
             'sendBtn',
             'disableNotifications',
-            'userId'
+            'userId',
+            'user',
+            'csrfToken',
+            'name',
+            'enterName',
+            'email',
+            'enterEmail',
+            'password',
+            'enterPassword',
+            'profile',
+            'uploadFile'
         ],
         mounted() {
             this.getConversations()

@@ -5,7 +5,10 @@
 
                 <div slot="header">
                     <b-form inline class="justify-content-between">
-                        <label>{{ contactName }}</label>
+                        <div>
+                            <b-img :src="contactImage" rounded="circle" fluid width="24" height="24" :alt="contactName" :title="contactName" class="m-1 d-inline" />
+                            <label class="d-inline">{{ contactName }}</label>
+                        </div>
                         <b-form-checkbox>
                             {{ disableNotifications }}
                         </b-form-checkbox>
@@ -54,6 +57,7 @@
             'disableNotifications',
             'contactId',
             'contactName',
+            'contactImage',
             'messages'
         ],
         data() {
@@ -92,5 +96,8 @@
     .card-body-scroll {
         overflow-y: auto;
         max-height: calc(100vh - 165.5px);
+    }
+    .card-header {
+        background-color: #fff !important;
     }
 </style>
