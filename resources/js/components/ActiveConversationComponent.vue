@@ -6,6 +6,7 @@
                 <div slot="header">
                     <b-form inline class="justify-content-between">
                         <div>
+                            <label class="d-inline back d-md-none" @click="$emit('back')">←</label>
                             <b-img :src="contactImage" rounded="circle" fluid width="24" height="24" :alt="contactName" :title="contactName" class="m-1 d-inline" />
                             <label class="d-inline">{{ contactName }}</label>
                         </div>
@@ -99,5 +100,9 @@
     }
     .card-header {
         background-color: #fff !important;
+    }
+    .back {
+        font-weight: bold;
+        font-size: 1.5em;
     }
 </style>

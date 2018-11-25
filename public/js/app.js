@@ -1688,6 +1688,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['send', 'writeMessage', 'sendBtn', 'disableNotifications', 'contactId', 'contactName', 'contactImage', 'messages'],
@@ -1778,6 +1779,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -1785,7 +1789,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             selectedConversation: null,
             messages: [],
             conversations: [],
-            querySearch: ''
+            querySearch: '',
+            toggle: true
         };
     },
 
@@ -1816,6 +1821,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         changeActiveConversation: function changeActiveConversation(conversation) {
             this.selectedConversation = conversation;
             this.getMessages();
+            this.changeToggle();
         },
         getMessages: function getMessages() {
             var _this2 = this;
@@ -1848,6 +1854,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return conversation.contact_id == user.id;
             });
             if (index >= 0) this.$set(this.conversations[index], 'online', status);
+        },
+        changeToggle: function changeToggle() {
+            return this.toggle = !this.toggle;
         }
     },
     computed: {
@@ -21306,7 +21315,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.card-body-scroll {\n    overflow-y: auto;\n    max-height: calc(100vh - 165.5px);\n}\n.card-header {\n    background-color: #fff !important;\n}\n", ""]);
+exports.push([module.i, "\n.card-body-scroll {\n    overflow-y: auto;\n    max-height: calc(100vh - 165.5px);\n}\n.card-header {\n    background-color: #fff !important;\n}\n.back {\n    font-weight: bold;\n    font-size: 1.5em;\n}\n", ""]);
 
 // exports
 
@@ -80648,7 +80657,7 @@ var render = function() {
     [
       _c(
         "b-col",
-        { staticClass: "text-center", attrs: { cols: "12", md: "3" } },
+        { staticClass: "text-center", attrs: { cols: "3" } },
         [
           _c("b-img", {
             staticClass: "m-1",
@@ -80669,7 +80678,7 @@ var render = function() {
       _c(
         "b-col",
         {
-          staticClass: "d-none d-md-block text-truncate",
+          staticClass: "text-truncate",
           attrs: { cols: "6", "align-self": "center" }
         },
         [
@@ -80695,44 +80704,37 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c(
-        "b-col",
-        {
-          staticClass: "d-none d-md-block",
-          attrs: { cols: "3", "align-self": "center" }
-        },
-        [
-          _c("div", { staticClass: "row justify-content-center" }, [
-            _c("p", { staticClass: "text-muted small mb-0 text-right" }, [
-              _vm._v(_vm._s(_vm.lastTime))
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "row", staticStyle: { "min-height": "18px" } },
-            [
-              _c(
-                "b-badge",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.notifications > 0,
-                      expression: "notifications > 0"
-                    }
-                  ],
-                  staticClass: "mx-auto",
-                  attrs: { variant: "dark" }
-                },
-                [_vm._v(_vm._s(_vm.notifications))]
-              )
-            ],
-            1
-          )
-        ]
-      )
+      _c("b-col", { attrs: { cols: "3", "align-self": "center" } }, [
+        _c("div", { staticClass: "row justify-content-center" }, [
+          _c("p", { staticClass: "text-muted small mb-0 text-right" }, [
+            _vm._v(_vm._s(_vm.lastTime))
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "row", staticStyle: { "min-height": "18px" } },
+          [
+            _c(
+              "b-badge",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.notifications > 0,
+                    expression: "notifications > 0"
+                  }
+                ],
+                staticClass: "mx-auto",
+                attrs: { variant: "dark" }
+              },
+              [_vm._v(_vm._s(_vm.notifications))]
+            )
+          ],
+          1
+        )
+      ])
     ],
     1
   )
@@ -80766,7 +80768,11 @@ var render = function() {
         [
           _c(
             "b-col",
-            { staticClass: "pt-3 border-right", attrs: { cols: "4" } },
+            {
+              staticClass: "pt-3 border-right d-none d-md-block",
+              class: _vm.toggle ? "d-block" : "",
+              attrs: { cols: "12", md: "4" }
+            },
             [
               _c("b-form-input", {
                 staticClass: "form-control-sm mb-2",
@@ -80797,7 +80803,11 @@ var render = function() {
           _vm._v(" "),
           _c(
             "b-col",
-            { attrs: { cols: "8" } },
+            {
+              staticClass: "d-none d-md-block",
+              class: !_vm.toggle ? "d-block" : "",
+              attrs: { cols: "12", md: "8" }
+            },
             [
               _vm.selectedConversation
                 ? _c("active-conversation-component", {
@@ -80815,7 +80825,8 @@ var render = function() {
                     on: {
                       messageCreated: function($event) {
                         _vm.addMessage($event)
-                      }
+                      },
+                      back: _vm.changeToggle
                     }
                   })
                 : _vm._e()
@@ -80892,6 +80903,19 @@ var render = function() {
                       _c(
                         "div",
                         [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "d-inline back d-md-none",
+                              on: {
+                                click: function($event) {
+                                  _vm.$emit("back")
+                                }
+                              }
+                            },
+                            [_vm._v("←")]
+                          ),
+                          _vm._v(" "),
                           _c("b-img", {
                             staticClass: "m-1 d-inline",
                             attrs: {

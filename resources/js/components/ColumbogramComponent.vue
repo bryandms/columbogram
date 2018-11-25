@@ -1,7 +1,8 @@
 <template>
     <b-container fluid class="h-100">
         <b-row class="h-100">
-            <b-col cols="4" class="pt-3 border-right">
+            <b-col cols="12" md="4" class="pt-3 border-right d-none d-md-block"
+                :class="toggle ? 'd-block' : ''">
                 <b-form-input class="form-control-sm mb-2"
                     type="text"
                     v-model="querySearch"
@@ -13,7 +14,8 @@
                 </contact-list-component>
             </b-col>
 
-            <b-col cols="8">
+            <b-col cols="12" md="8" class="d-none d-md-block"
+                :class="!toggle ? 'd-block' : ''">
                 <active-conversation-component class="h-100"
                     :send="send"
                     :write-message="writeMessage"
@@ -24,7 +26,8 @@
                     :contact-name="selectedConversation.contact_name"
                     :contact-image="selectedConversation.contact_image"
                     :messages="messages"
-                    @messageCreated="addMessage($event)">
+                    @messageCreated="addMessage($event)"
+                    @back="changeToggle">
                 </active-conversation-component>
             </b-col>
         </b-row>
@@ -52,7 +55,8 @@
                 selectedConversation: null,
                 messages: [],
                 conversations: [],
-                querySearch: ''
+                querySearch: '',
+                toggle: true
             }
         },
         props: [
@@ -98,6 +102,7 @@
             changeActiveConversation(conversation) {
                 this.selectedConversation = conversation
                 this.getMessages()
+                this.changeToggle()
             },
             getMessages() {
                 axios.get(`/api/messages?contact_id=${this.selectedConversation.contact_id}`)
@@ -132,6 +137,9 @@
                 })
                 if (index >= 0)
                     this.$set(this.conversations[index], 'online', status)
+            },
+            changeToggle() {
+                return this.toggle = !this.toggle
             }
         },
         computed: {
