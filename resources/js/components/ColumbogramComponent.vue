@@ -1,19 +1,14 @@
 <template>
     <b-container fluid class="h-100">
         <b-row class="h-100">
+            <!-- Search bar and contact list -->
             <b-col cols="12" md="4" class="pt-3 border-right d-none d-md-block"
                 :class="toggle ? 'd-block' : ''">
-                <b-form-input class="form-control-sm mb-2"
-                    type="text"
-                    v-model="querySearch"
-                    :placeholder="search">
-                </b-form-input>
-                <contact-list-component :search="search"
-                    @conversationSelected="changeActiveConversation($event)"
-                    :conversations="conversationsFiltered">
-                </contact-list-component>
+                <contact-form-component :search="search" />
+                <contact-list-component :search="search" />
             </b-col>
 
+            <!-- Active conversation -->
             <b-col cols="12" md="8" class="d-none d-md-block"
                 :class="!toggle ? 'd-block' : ''">
                 <active-conversation-component class="h-100"
@@ -21,14 +16,7 @@
                     :write-message="writeMessage"
                     :send-btn="sendBtn"
                     :disable-notifications="disableNotifications"
-                    v-if="selectedConversation"
-                    :contact-id="selectedConversation.contact_id"
-                    :contact-name="selectedConversation.contact_name"
-                    :contact-image="selectedConversation.contact_image"
-                    :messages="messages"
-                    @messageCreated="addMessage($event)"
-                    @back="changeToggle">
-                </active-conversation-component>
+                    v-if="selectedConversation" />
             </b-col>
         </b-row>
 
@@ -50,15 +38,6 @@
 
 <script>
     export default {
-        data() {
-            return {
-                selectedConversation: null,
-                messages: [],
-                conversations: [],
-                querySearch: '',
-                toggle: true
-            }
-        },
         props: [
             'search',
             'send',
@@ -78,13 +57,14 @@
             'uploadFile'
         ],
         mounted() {
-            this.getConversations()
+            this.$store.commit('setUser', this.user)
+            this.$store.dispatch('getConversations')
 
             Echo.private(`users.${this.userId}`)
                 .listen('MessageSent', (data) => {
                     const message = data.message
                     message.written_by_me = false
-                    this.addMessage(message)
+                    this.$store.commit('addMessage', message)
                 })
             
             Echo.join(`columbogram`)
@@ -99,56 +79,20 @@
                 )
         },
         methods: {
-            changeActiveConversation(conversation) {
-                this.selectedConversation = conversation
-                this.getMessages()
-                this.changeToggle()
-            },
-            getMessages() {
-                axios.get(`/api/messages?contact_id=${this.selectedConversation.contact_id}`)
-                    .then((res) => {
-                        this.messages = res.data
-                    })
-            },
-            addMessage(message) {
-                const conversation = this.conversations.find(conversation => {
-                    return conversation.contact_id == message.from_id ||
-                        conversation.contact_id == message.to_id
-                })
-
-                const author = this.userId === message.from_id ? '' : `${conversation.contact_name}: `
-
-                conversation.last_message = `${author}${message.content}`
-                conversation.last_time = message.created_at
-
-                if (this.selectedConversation.contact_id == message.from_id
-                    || this.selectedConversation.contact_id == message.to_id)
-                    this.messages.push(message)
-            },
-            getConversations() {
-                axios.get('/api/conversations')
-                    .then((res) => {
-                        this.conversations = res.data
-                    })
-            },
             changeStatus(user, status) {
-                const index = this.conversations.findIndex(conversation => {
+                const index = this.$store.state.conversations.findIndex(conversation => {
                     return conversation.contact_id == user.id
                 })
                 if (index >= 0)
-                    this.$set(this.conversations[index], 'online', status)
-            },
-            changeToggle() {
-                return this.toggle = !this.toggle
+                    this.$set(this.$store.state.conversations[index], 'online', status)
             }
         },
         computed: {
-            conversationsFiltered() {
-                return this.conversations.filter(
-                    conversation => conversation.contact_name
-                    .toLowerCase()
-                    .includes(this.querySearch.toLowerCase())
-                )
+            selectedConversation() {
+                return this.$store.state.selectedConversation
+            },
+            toggle() {
+                return this.$store.state.toggle
             }
         }
     }
